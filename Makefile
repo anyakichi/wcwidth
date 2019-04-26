@@ -1,18 +1,19 @@
-CFLAGS += -O3 -Wall -Werror
+CFLAGS += -O3 -Wall -Wextra -Werror -fPIC
+LDFLAGS = -ldl
 
 ifeq ($(shell uname),Linux)
-    TARGET=wcwidth.so
+    TARGET = libwcwidth.so
 else
-    TARGET=wcwidth.dylib
+    TARGET = libwcwidth.dylib
 endif
 
 all: $(TARGET)
 
-wcwidth.so: wcwidth.o
-	$(CC) -shared -o $@ $^ -lc
+libwcwidth.so: wcwidth.o
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
-wcwidth.dylib: wcwidth.o
-	$(CC) -dynamiclib -install_name $@ -o $@ $^ -lc
+libwcwidth.dylib: wcwidth.o
+	$(CC) -dynamiclib -install_name $@ -o $@ $^ $(LDFLAGS)
 
 clean:
 	rm -rf $(TARGET) *.o
